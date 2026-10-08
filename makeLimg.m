@@ -5,10 +5,12 @@ function makeLimg()
 % URLリストから画像をダウンロードし、
 % 分類が容易なデータセットと分類が難しいデータセットについて、
 % positive / negative画像のフォルダを生成する。
+    baseDir = fileparts(mfilename('fullpath'));
+
     %pos
-    list = textread('pos_urllist.txt', '%s');
-    OUTDIR1 = 'posImgDir_easy';
-    OUTDIR2 = 'posImgDir_diff';
+    list = textread(fullfile(baseDir, 'pos_urllist.txt'), '%s');
+    OUTDIR1 = fullfile(baseDir, 'posImgDir_easy');
+    OUTDIR2 = fullfile(baseDir, 'posImgDir_diff');
     mkdir(OUTDIR1);
     mkdir(OUTDIR2);
     for i = 1:size(list, 1)
@@ -18,11 +20,11 @@ function makeLimg()
         copyfile(fname1, fname2);
     end
     % neg(簡単な方)
-    baseDir = fileparts(mfilename('fullpath'));
+    
     path = fullfile(baseDir, 'bgimg');
     ds = imageDatastore(path, 'FileExtensions', '.jpg');
     list = ds.Files;
-    OUTDIR1 = 'negImgDir_easy';
+    OUTDIR1 = fullfile(baseDir, 'negImgDir_easy');
     mkdir(OUTDIR1);
     NegIdx = [1:size(list, 1)];
     rng(1);
@@ -32,8 +34,8 @@ function makeLimg()
         copyfile(NegList{j}, fnameNeg);
     end
     % neg(難しい方)
-    list = textread('neg_urllist.txt', '%s');
-    OUTDIR2 = 'negImgDir_diff';
+    list = textread(fullfile(baseDir, 'neg_urllist.txt'), '%s');
+    OUTDIR2 = fullfile(baseDir, 'negImgDir_diff');
     mkdir(OUTDIR2);
     for i = 1:size(list, 1)
         fname = strcat(OUTDIR2, '/', num2str(i, '%04d'), '.jpg');

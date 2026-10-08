@@ -141,15 +141,21 @@ function repo1()
     fprintf('--------------------------------\n');
 
     % (2) BoF + SVM(非線形)
-    if exist('bof_easy.mat', 'file') && exist('bof_diff.mat', 'file')
+    bofEasyPath = fullfile(baseDir, 'bof_easy.mat');
+    bofDiffPath = fullfile(baseDir, 'bof_diff.mat');
+
+    if exist(bofEasyPath, 'file') && exist(bofDiffPath, 'file')
         fprintf('保存済みのBoFデータを読み込みます...\n');
-        load('bof_easy.mat', 'bof_easy');
-        load('bof_diff.mat', 'bof_diff');
+
+        load(bofEasyPath, 'bof_easy');
+        load(bofDiffPath, 'bof_diff');
     else
         fprintf('BoFデータの新規作成を開始します（時間がかかります）...\n');
+
         makeCodebookBoF(poseasylist, posdifflist, negeasylist, negdifflist);
-        load('bof_easy.mat', 'bof_easy');
-        load('bof_diff.mat', 'bof_diff');
+
+        load(bofEasyPath, 'bof_easy');
+        load(bofDiffPath, 'bof_diff');
     end
 
     accuracies = zeros(k, 1);
