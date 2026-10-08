@@ -120,14 +120,15 @@ Flickrの画像検索結果には、検索キーワードと直接関係しな�
 
 処理の流れ：
 
+```text
 Flickr images
-↓
+    ↓
 VGG16 feature extraction
-↓
+    ↓
 Linear SVM
-↓
+    ↓
 SVM score
-↓
+    ↓
 Re-ranking
 
 
