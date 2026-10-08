@@ -1,49 +1,62 @@
 function repo2()
+% repo2
+% Flickr画像検索結果の再ランキング実験を行う。
+%
+% Flickrから取得した画像からVGG16の特徴量を抽出し、
+% 線形SVMを学習する。
+% ノイズを含むテスト画像に対してSVMスコアを計算し、
+% スコアの高い順に並べ替えることで検索結果を再ランキングする。
+    baseDir = fileparts(mfilename('fullpath'));
     % n = 25, キーワード"ramen", pos
-    list1 = textread('pos_urllist_25_1.txt', '%s');
+    list1 = textread(fullfile(baseDir, 'pos_urllist_25_1.txt'), '%s');
     % n = 50, キーワード"ramen", pos
-    list2 = textread('pos_urllist_50_1.txt', '%s');
+    list2 = textread(fullfile(baseDir, 'pos_urllist_50_1.txt'), '%s');
     % n = 25, キーワード"sushi", pos
-    list3 = textread('pos_urllist_25_2.txt', '%s');
+    list3 = textread(fullfile(baseDir, 'pos_urllist_25_2.txt'), '%s');
     % n = 50, キーワード"sushi", pos
-    list4 = textread('pos_urllist_50_2.txt', '%s');
-    OUTDIR1 = 'posImgDir_ramen_25';
-    OUTDIR2 = 'posImgDir_ramen_50';
-    OUTDIR3 = 'posImgDir_sushi_25';
-    OUTDIR4 = 'posImgDir_sushi_50';
+    list4 = textread(fullfile(baseDir, 'pos_urllist_50_2.txt'), '%s');
+    OUTDIR1 = fullfile(baseDir, 'posImgDir_ramen_25');
+    OUTDIR2 = fullfile(baseDir, 'posImgDir_ramen_50');
+    OUTDIR3 = fullfile(baseDir, 'posImgDir_sushi_25');
+    OUTDIR4 = fullfile(baseDir, 'posImgDir_sushi_50');
     
     if ~exist(OUTDIR1, 'dir')
         mkdir(OUTDIR1);
         for i = 1:size(list1, 1)
-            fname = strcat(OUTDIR1,'/', num2str(i,'%04d'), '.jpg');
+            % fname = strcat(OUTDIR1,'/', num2str(i,'%04d'), '.jpg');
+            fname = fullfile(OUTDIR1, [num2str(i, '%04d'), '.jpg']);
             websave(fname, list1{i});
         end
     end
     if ~exist(OUTDIR2, 'dir')
         mkdir(OUTDIR2);
         for i = 1:size(list2, 1)
-            fname = strcat(OUTDIR2,'/', num2str(i,'%04d'), '.jpg');
+            % fname = strcat(OUTDIR2,'/', num2str(i,'%04d'), '.jpg');
+            fname = fullfile(OUTDIR2, [num2str(i, '%04d'), '.jpg']);
             websave(fname, list2{i});
         end
     end
     if ~exist(OUTDIR3, 'dir')
         mkdir(OUTDIR3);
         for i = 1:size(list3, 1)
-            fname = strcat(OUTDIR3,'/', num2str(i,'%04d'), '.jpg');
+            % fname = strcat(OUTDIR3,'/', num2str(i,'%04d'), '.jpg');
+            fname = fullfile(OUTDIR3, [num2str(i, '%04d'), '.jpg']);
             websave(fname, list3{i});
         end
     end
     if ~exist(OUTDIR4, 'dir')
         mkdir(OUTDIR4);
         for i = 1:size(list4, 1)
-            fname = strcat(OUTDIR4,'/', num2str(i,'%04d'), '.jpg');
+            % fname = strcat(OUTDIR4,'/', num2str(i,'%04d'), '.jpg');
+            fname = fullfile(OUTDIR4, [num2str(i, '%04d'), '.jpg']);
             websave(fname, list4{i});
         end
     end
     % neg
-    OUTDIR1 = 'negImgDir_750';
+    OUTDIR1 = fullfile(baseDir, 'negImgDir_750');
     if ~exist(OUTDIR1, 'dir')
-        path = fullfile('/MATLAB Drive/最終レポート/bgimg');
+        % path = fullfile('/MATLAB Drive/最終レポート/bgimg');
+        path = fullfile(baseDir, 'bgimg');
         ds = imageDatastore(path, 'FileExtensions', '.jpg');
         list = ds.Files;
         mkdir(OUTDIR1);
@@ -51,16 +64,16 @@ function repo2()
         rng(1);
         NegList = list(NegIdx(randperm(length(NegIdx), 750)));
         for j = 1:length(NegList)
-            fnameNeg = strcat(OUTDIR1, '/', num2str(j, '%04d'), '.jpg');
+            fnameNeg = fullfile(OUTDIR1, [num2str(j, '%04d'), '.jpg']);
             copyfile(NegList{j}, fnameNeg);
         end
     end
     net = vgg16;
-    pos1 = fullfile('/MATLAB Drive/最終レポート/posImgDir_ramen_25');
-    pos2 = fullfile('/MATLAB Drive/最終レポート/posImgDir_ramen_50');
-    pos3 = fullfile('/MATLAB Drive/最終レポート/posImgDir_sushi_25');
-    pos4 = fullfile('/MATLAB Drive/最終レポート/posImgDir_sushi_50');
-    neg = fullfile('/MATLAB Drive/最終レポート/negImgDir_750');
+    pos1 = fullfile(baseDir, 'posImgDir_ramen_25');
+    pos2 = fullfile(baseDir, 'posImgDir_ramen_50');
+    pos3 = fullfile(baseDir, 'posImgDir_sushi_25');
+    pos4 = fullfile(baseDir, 'posImgDir_sushi_50');
+    neg = fullfile(baseDir, 'negImgDir_750');
     pos1Ds = imageDatastore(pos1, 'FileExtensions', '.jpg');
     pos2Ds = imageDatastore(pos2, 'FileExtensions', '.jpg');
     pos3Ds = imageDatastore(pos3, 'FileExtensions', '.jpg');
@@ -129,29 +142,29 @@ function repo2()
     mdl3 = fitcsvm(dcnnf3, Y3, 'KernelFunction', 'linear');
     mdl4 = fitcsvm(dcnnf4, Y4, 'KernelFunction', 'linear');
     % ramenはinteresting, sushiはlatestで300やった
-    OUTDIR1 = 'test_noisy_ramen';
-    OUTDIR2 = 'test_noisy_sushi';
+    OUTDIR1 = fullfile(baseDir, 'test_noisy_ramen');
+    OUTDIR2 = fullfile(baseDir, 'test_noisy_sushi');
     if ~exist(OUTDIR1, 'dir')
-        list = textread('test_noisy_ramen.txt', '%s');
+        list = textread(fullfile(baseDir, 'test_noisy_ramen.txt'), '%s');
         mkdir(OUTDIR1);
         for i = 1:size(list, 1)
-            fname = strcat(OUTDIR1,'/', num2str(i,'%04d'), '.jpg');
+            fname = fullfile(OUTDIR1, [num2str(i, '%04d'), '.jpg']);
             websave(fname, list{i});
         end
     end
     if ~exist(OUTDIR2, 'dir')
-        list = textread('test_noisy_sushi.txt', '%s');
+        list = textread(fullfile(baseDir, 'test_noisy_sushi.txt'), '%s');
         mkdir(OUTDIR2);
         for i = 1:size(list, 1)
             fname = strcat(OUTDIR2,'/', num2str(i,'%04d'), '.jpg');
             websave(fname, list{i});
         end
     end
-    test1_path = fullfile('/MATLAB Drive/最終レポート/test_noisy_ramen');
+    test1_path = fullfile(baseDir, 'test_noisy_ramen');
     test1Ds = imageDatastore(test1_path, 'FileExtensions', '.jpg');
     test1 = test1Ds.Files;
 
-    test2_path = fullfile('/MATLAB Drive/最終レポート/test_noisy_sushi');
+    test2_path = fullfile(baseDir, 'test_noisy_sushi');
     test2Ds = imageDatastore(test2_path, 'FileExtensions', '.jpg');
     test2 = test2Ds.Files;
     IM1 = []; IM2 = [];
@@ -186,7 +199,7 @@ function repo2()
     [sorted_score3, sorted_idx3] = sort(score3(:,2), 'descend');
     [sorted_score4, sorted_idx4] = sort(score4(:,2), 'descend');
     % ramen25枚
-    fid = fopen('ramen_25.html', 'w');
+    fid = fopen(fullfile(baseDir, 'ramen_25.html'), 'w');
     fprintf(fid, '<html><body><h2>ポジティブ画像25枚のラーメン画像リランキング結果</h2><table border="1">');
     fprintf(fid, '<tr><th>Rank</th><th>Score</th><th>Image</th></tr>');
     for i = 1 : 100
@@ -202,7 +215,7 @@ function repo2()
     fclose(fid);
     fprintf('ramen_25.html を作成しました。ブラウザで開いて確認してください。\n');
     % ramen50枚
-    fid = fopen('ramen_50.html', 'w');
+    fid = fopen(fullfile(baseDir, 'ramen_50.html'), 'w');
     fprintf(fid, '<html><body><h2>ポジティブ画像50枚のラーメン画像リランキング結果</h2><table border="1">');
     fprintf(fid, '<tr><th>Rank</th><th>Score</th><th>Image</th></tr>');
     for i = 1 : 100
@@ -218,7 +231,7 @@ function repo2()
     fclose(fid);
     fprintf('ramen_50.html を作成しました。ブラウザで開いて確認してください。\n');
     % sushi25枚
-    fid = fopen('sushi_25.html', 'w');
+    fid = fopen(fullfile(baseDir, 'sushi_25.html'), 'w');
     fprintf(fid, '<html><body><h2>ポジティブ画像25枚の寿司画像リランキング結果</h2><table border="1">');
     fprintf(fid, '<tr><th>Rank</th><th>Score</th><th>Image</th></tr>');
     for i = 1 : 100
@@ -234,7 +247,7 @@ function repo2()
     fclose(fid);
     fprintf('sushi_25.html を作成しました。ブラウザで開いて確認してください。\n');
     % sushi50枚
-    fid = fopen('sushi_50.html', 'w');
+    fid = fopen(fullfile(baseDir, 'sushi_50.html'), 'w');
     fprintf(fid, '<html><body><h2>ポジティブ画像50枚の寿司画像リランキング結果</h2><table border="1">');
     fprintf(fid, '<tr><th>Rank</th><th>Score</th><th>Image</th></tr>');
     for i = 1 : 100
