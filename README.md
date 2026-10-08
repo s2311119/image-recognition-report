@@ -55,7 +55,7 @@ SVMの出力スコアを用いて画像を並べ替えることで、
 2. BoF + Non-linear SVM
 3. AlexNet feature + Linear SVM
 4. VGG16 feature + Linear SVM
-5. BoF + Linear SVM + Feature Maps
+5. BoF + Explicit Feature Map + Linear SVM
 6. ResNet101 feature + Linear SVM
 7. DenseNet201 feature + Linear SVM
 8. AlexNet feature + Non-linear SVM
@@ -63,7 +63,7 @@ SVMの出力スコアを用いて画像を並べ替えることで、
 10. ResNet101 feature + Non-linear SVM
 11. DenseNet201 feature + Non-linear SVM
 
-CNNを用いた手法では、学習済みネットワークの全結合層から特徴量を抽出し、
+CNNを用いた手法では、学習済みネットワークの最終分類層より前の中間層から特徴量を抽出し、
 その特徴量をSVMへ入力して分類しています。
 
 
