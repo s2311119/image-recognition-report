@@ -1,4 +1,10 @@
 function makeLimg()
+% makeLimg
+% Task 1で使用する画像データセットを作成する。
+%
+% URLリストから画像をダウンロードし、
+% 分類が容易なデータセットと分類が難しいデータセットについて、
+% positive / negative画像のフォルダを生成する。
     %pos
     list = textread('pos_urllist.txt', '%s');
     OUTDIR1 = 'posImgDir_easy';
@@ -12,7 +18,8 @@ function makeLimg()
         copyfile(fname1, fname2);
     end
     % neg(簡単な方)
-    path = fullfile('/MATLAB Drive/最終レポート/bgimg');
+    baseDir = fileparts(mfilename('fullpath'));
+    path = fullfile(baseDir, 'bgimg');
     ds = imageDatastore(path, 'FileExtensions', '.jpg');
     list = ds.Files;
     OUTDIR1 = 'negImgDir_easy';

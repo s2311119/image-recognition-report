@@ -1,4 +1,10 @@
 function makeCodebookBoF(poseasylist, posdifflist, negeasylist, negdifflist)
+% makeCodebookBoF
+% Bag of Features (BoF)用のコードブックと特徴ベクトルを生成する。
+%
+% 各画像から局所特徴を抽出し、k-meansによってvisual wordsを作成する。
+% 各画像をvisual wordの出現頻度ヒストグラムとして表現し、
+% 分類用のBoF特徴量として保存する。
     fprintf('--- コードブック作成を開始します ---\n');
     fprintf('画像リストを作成中...\n');
     easy_list = {poseasylist{:} negeasylist{:}};

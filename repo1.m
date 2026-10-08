@@ -1,8 +1,20 @@
 function repo1()
-    posEasyFolderPaths = fullfile('/MATLAB Drive/最終レポート/posImgDir_easy');
-    posDiffFolderPaths = fullfile('/MATLAB Drive/最終レポート/posImgDir_diff');
-    negEasyFolderPaths = fullfile('/MATLAB Drive/最終レポート/negImgDir_easy');
-    negDiffFolderPaths = fullfile('/MATLAB Drive/最終レポート/negImgDir_diff');
+% repo1
+% Web画像を用いた2クラス画像分類の比較実験を行う。
+%
+% 以下の特徴抽出・分類手法を5-fold cross validationで評価する。
+% - Color Histogram + Nearest Neighbor
+% - Bag of Features (BoF) + SVM
+% - BoF + Explicit Feature Map + Linear SVM
+% - Pretrained CNN features + SVM
+%
+% CNNにはAlexNet, VGG16, ResNet101, DenseNet201を使用する。
+    baseDir = fileparts(mfilename('fullpath'));
+
+    posEasyFolderPaths = fullfile(baseDir, 'posImgDir_easy');
+    posDiffFolderPaths = fullfile(baseDir, 'posImgDir_diff');
+    negEasyFolderPaths = fullfile(baseDir, 'negImgDir_easy');
+    negDiffFolderPaths = fullfile(baseDir, 'negImgDir_diff');
     posEasyDs = imageDatastore(posEasyFolderPaths, 'FileExtensions', '.jpg');
     posDiffDs = imageDatastore(posDiffFolderPaths, 'FileExtensions', '.jpg');
     negEasyDs = imageDatastore(negEasyFolderPaths, 'FileExtensions', '.jpg');
