@@ -130,7 +130,7 @@ Linear SVM
 SVM score
     ↓
 Re-ranking
-
+```
 
 ## 再ランキング結果
 
